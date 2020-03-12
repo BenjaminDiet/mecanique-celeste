@@ -1,0 +1,31 @@
+Liste des commandes utilisables. Rappel : utiliser la commande "bash" avant le lancement du script.
+
+
+simuler lien n ans unit compilation methode theorie
+
+	Résoud le problème à N corps.
+
+
+	lien : récupère le système inscrit dans le dossier /data/
+	n : nombre de points de calculs
+	ans : durée de la simulation en années
+	unit : unité de mesure des longueurs
+		m : mètres
+		UA : unité astronomique)
+	compilation : 
+		-new : nettoie les fichiers et recompile (make clean et make)
+		-old : ne recompile pas le programme
+	methodes : 
+		-Euler
+		-EulerCromer
+		-Verlet
+		-rk4
+		-all
+	theorie : 
+		-classique (defaut)
+		-relativiste
+
+cleaning
+	
+	Nettoie les fichiers .txt et .png créés par l'exécution du script "simuler".
+

@@ -1,0 +1,4 @@
+Corps.o: Corps.cpp Corps.h Utiles.h
+Utiles.o: Utiles.cpp Utiles.h Corps.h Systeme.h
+Systeme.o: Systeme.cpp Systeme.h Corps.h Utiles.h
+main.o: main.cpp Utiles.h Corps.h Systeme.h
