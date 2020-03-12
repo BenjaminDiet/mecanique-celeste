@@ -5,26 +5,23 @@ ts=$(date +%s%N)
 
 
 clear
+bash cleaning
 
 cd src
-
 if [ "$5" == '-new' ]; then
 	make clean
 	make
 fi
-
 ./mecaCeleste $1 $2 $3 $4 $6 $7
-
-
 cd ..
 
 
 
 cd positions
 
-if [ "$6" == '-Verlet' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Verlet' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-		  	set term pngcairo size 1600,1200
+		  	set term pngcairo size 3000,1600
 		  	set output "../graphs/Verlet_sim3D_$3 ans $2pts.png"
 		set xlabel "Axis x, (en $4)"
 		set ylabel "Axis y, (en $4)"
@@ -37,9 +34,9 @@ fi
 
 
 
-if [ "$6" == '-Cromer' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Cromer' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-		  	set term pngcairo size 1600,1200
+		  	set term pngcairo size 3000,1600
 		  	set output "../graphs/EulerCromer_sim3D_$3 ans $2pts.png"
 		set xlabel "Axis x, (en $4)"
 		set ylabel "Axis y, (en $4)"
@@ -52,9 +49,9 @@ fi
 
 
 
-if [ "$6" == '-Euler' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Euler' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-		  	set term pngcairo size 1600,1200
+		  	set term pngcairo size 3000,1600
 		  	set output "../graphs/Euler_sim3D_$3 ans $2pts.png"
 		set xlabel "Axis x, (en $4)"
 		set ylabel "Axis y, (en $4)"
@@ -65,9 +62,9 @@ if [ "$6" == '-Euler' ] || [ "$6" == '-all' ]; then
 	EOFMarker
 fi
 
-if [ "$6" == '-RK4' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'RK4' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-		  	set term pngcairo size 1600,1200
+		  	set term pngcairo size 3000,1600
 		  	set output "../graphs/RK4_sim3D_$3 ans $2pts.png"
 		set xlabel "Axis x, (en $4)"
 		set ylabel "Axis y, (en $4)"
@@ -84,9 +81,9 @@ cd ..
 
 cd aires
 
-if [ "$6" == '-Euler' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Euler' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-  	set term pngcairo size 1600,1200
+  	set term pngcairo size 3000,1600
   	set output "../graphsAires/Euler_aires_$3 ans $2pts.png"
 		set datafile separator "\t"
 		set xlabel "Temps"
@@ -98,9 +95,9 @@ if [ "$6" == '-Euler' ] || [ "$6" == '-all' ]; then
 	EOFMarker
 fi
 
-if [ "$6" == '-Cromer' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Cromer' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-  	set term pngcairo size 1600,1200
+  	set term pngcairo size 3000,1600
   	set output "../graphsAires/EulerCromer_aires_$3 ans $2pts.png"
 		set datafile separator "\t"
 		set xlabel "Temps"
@@ -112,9 +109,9 @@ if [ "$6" == '-Cromer' ] || [ "$6" == '-all' ]; then
 	EOFMarker
 fi
 
-if [ "$6" == '-Verlet' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'Verlet' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-  	set term pngcairo size 1600,1200
+  	set term pngcairo size 3000,1600
   	set output "../graphsAires/Verlet_aires_$3 ans $2pts.png"
 		set datafile separator "\t"
 		set xlabel "Temps"
@@ -126,9 +123,9 @@ if [ "$6" == '-Verlet' ] || [ "$6" == '-all' ]; then
 	EOFMarker
 fi
 
-if [ "$6" == '-RK4' ] || [ "$6" == '-all' ]; then
+if [ "$6" == 'RK4' ] || [ "$6" == 'all' ]; then
 	gnuplot -persist <<-EOFMarker
-  	set term pngcairo size 1600,1200
+  	set term pngcairo size 3000,1600
   	set output "../graphsAires/RK4_aires_$3 ans $2pts.png"
 		set datafile separator "\t"
 		set xlabel "Temps"
@@ -145,7 +142,7 @@ cd ..
 
 cd energies
 	gnuplot -persist <<-EOFMarker
-  	set term pngcairo size 1600,1200
+  	set term pngcairo size 3000,1600
   	set output "../graphsEnergie/energieMeca_$3 ans $2pts.png"
 		set datafile separator "\t"
 		set xlabel "Temps"

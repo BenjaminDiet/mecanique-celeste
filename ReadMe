@@ -16,14 +16,14 @@ simuler lien n ans unit compilation methode theorie
 		-new : nettoie les fichiers et recompile (make clean et make)
 		-old : ne recompile pas le programme
 	methodes : 
-		-Euler
-		-EulerCromer
-		-Verlet
-		-rk4
-		-all
+		Euler
+		EulerCromer
+		Verlet
+		rk4
+		all
 	theorie : 
-		-classique (defaut)
-		-relativiste
+		classique (defaut)
+		relativiste
 
 cleaning
 	

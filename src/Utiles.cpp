@@ -59,24 +59,24 @@ vector<double> multScalaire(double m, const vector<double>& a){
 }
 
 vector<double> distance(const vector<double>& a, const vector<double>& b){
-	if(a.size() == b.size()){
 	vector<double> distance;
+	if(a.size() == b.size()){
 		for(int i = 0 ; i < (int) a.size() ; i++){
 				distance.push_back(b[i]-a[i]);
 		}
-	return distance;
 	}
+	return distance;
 }
 
 
 vector<double> add(const vector<double>& a, const vector<double>& b){
-	if(a.size() == b.size()){
 	vector<double> v;
+	if(a.size() == b.size()){
 		for(int i = 0 ; i < (int) a.size() ; i++){
 				v.push_back(b[i]+a[i]);
-		}
-	return v;
+		}		
 	}
+	return v;
 }
 vector<double> oppose(const vector<double>& a){
 
