@@ -99,7 +99,8 @@ vector<double> ProdVec(const vector<double>& U,const vector<double>& V){
 
 
 
-Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPos, bool relativiste){
+
+Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPos, bool relativiste, vector <double> sorties){
 
 	string methode;
 	if(id == 0) methode = "Euler";
@@ -172,43 +173,49 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		energieMeca.push_back(energie);
 	}
 
-if(h>0){
 
-// ECRITURE FICHIER
-	ofstream f;		
-	// Ecriture des coordonnees dans des fichiers separes
-	for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
-		f.open("../positions/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
-		for(int j = 0 ; j < (int) coordinates[i].size(); j++){
-			for(int k = 0 ; k < (int) coordinates[i][j].size() ; k++){
-				f << coordinates[i][j][k] << "\t";
-			}
-			f << endl;
-		}
 
-		f.close();
-	}
 
+	// ECRITURE FICHIER
+	ofstream f;	
+	if(sorties[0]){
 	
-	// Ecriture des aires dans un fichier global
-	for(int i = 1 ; i < (int) aires.size() ; i++){ // Pour toutes les planètes SAUF SOLEIL
-		f.open("../aires/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
-		for(int j = 0 ; j < (int) aires[i].size(); j++){
+		// Ecriture des coordonnees dans des fichiers separes
+			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
+			f.open("../positions/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+			for(int j = 0 ; j < (int) coordinates[i].size(); j++){
+				for(int k = 0 ; k < (int) coordinates[i][j].size() ; k++){
+					f << coordinates[i][j][k] << "\t";
+				}
+				f << endl;
+			}
+
+			f.close();
+		}
+	}
+	
+	
+	if(sorties[1]){
+
+		// Ecriture des aires dans un fichier global
+		for(int i = 1 ; i < (int) aires.size() ; i++){ // Pour toutes les planètes SAUF SOLEIL
+			f.open("../aires/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+			for(int j = 0 ; j < (int) aires[i].size(); j++){
 				f << setprecision(20) << (j*h)/(3600*24*365.25) << "\t" << aires[i][j] << endl;
 			}
-		f.close();
+			f.close();
 		}
-	
-
-
-
-	// Ecriture des énergie
-	f.open("../energies/energieMecanique"+methode +".txt",fstream::app);
-	for(int i = 0 ; i < (int) energieMeca.size() ; i++){
-		f << setprecision(20) << (i*h)/(3600*24*365.25) << "\t" << energieMeca[i] << endl;
 	}
-	f.close();
-}
+
+
+	if(sorties[2]){
+		// Ecriture des énergie
+		f.open("../energies/energieMecanique"+methode +".txt",fstream::app);
+		for(int i = 0 ; i < (int) energieMeca.size() ; i++){
+			f << setprecision(20) << (i*h)/(3600*24*365.25) << "\t" << energieMeca[i] << endl;
+		}
+		f.close();
+	}
 
 	return systeme;
 }

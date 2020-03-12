@@ -25,6 +25,7 @@ int main(int argc, char *argv[]){
 	int mS(3), mE(3);
 	string methode[] = {"Euler", "Euler-Cromer", "Verlet", "RK4"};
 	bool relativiste(false);
+	vector <double> sorties(3, true); // Affichage position, affichage aires, affichage energie
 	
 
 	if(string(argv[6]) == "relativiste") relativiste = true;
@@ -71,9 +72,9 @@ int main(int argc, char *argv[]){
 		cout << "\tMethode " << methode[methodeID] << endl;
 
 		// Résoudre système dans le bon sens
-		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste);	
+		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sorties);	
 		// Résoudre système dans le temps négatif
-		sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste);	
+		sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sorties);	
 
 		// Pour comparaison des distances
 		vector<vector <double>> coordFinales = sys.getPositions();
