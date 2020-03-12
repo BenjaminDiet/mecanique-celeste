@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+cd energies
+	gnuplot -persist <<-EOFMarker
+  	set term pngcairo size 3000,1600
+  	set output "../graphsEnergie/energieMeca_$2 ans $1pts.png"
+		set datafile separator "\t"
+		set xlabel "Temps"
+		set ylabel "Erreur relative sur l'énergie mécanique totale"
+		set format y "%.0s*10^{%T}"
+		FILES = system("ls -1 *.txt")
+		LABEL = system("ls -1 *.txt | sed -e 's/data//' -e 's/.dat//'")
+		plot for [i=1:words(FILES)] word(FILES,i) u 1:2 title word(LABEL,i) with lines noenhanced
+	EOFMarker
+cd ..
+

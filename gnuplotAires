@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+
+
+cd aires
+
+if [ "$3" == 'Euler' ] || [ "$3" == 'all' ]; then
+	gnuplot -persist <<-EOFMarker
+  	set term pngcairo size 3000,1600
+  	set output "../graphsAires/Euler_aires_$2 ans $1pts.png"
+		set datafile separator "\t"
+		set xlabel "Temps"
+		set ylabel "Erreur relative sur l'aire"
+		set format y "%.0s*10^{%T}"
+		FILES = system("ls -1 Euler_data*.txt")
+		LABEL = system("ls -1 Euler_data*.txt | sed -e 's/data//' -e 's/.dat//'")
+		plot for [i=1:words(FILES)] word(FILES,i) u 1:2 title word(LABEL,i) with lines noenhanced
+	EOFMarker
+fi
+
+if [ "$3" == 'Cromer' ] || [ "$3" == 'all' ]; then
+	gnuplot -persist <<-EOFMarker
+  	set term pngcairo size 3000,1600
+  	set output "../graphsAires/EulerCromer_aires_$2 ans $1pts.png"
+		set datafile separator "\t"
+		set xlabel "Temps"
+		set ylabel "Erreur relative sur l'aire"
+		set format y "%.0s*10^{%T}"
+		FILES = system("ls -1 EulerCromer_data*.txt")
+		LABEL = system("ls -1 EulerCromer_data*.txt | sed -e 's/data//' -e 's/.dat//'")
+		plot for [i=1:words(FILES)] word(FILES,i) u 1:2 title word(LABEL,i) with lines noenhanced
+	EOFMarker
+fi
+
+if [ "$3" == 'Verlet' ] || [ "$3" == 'all' ]; then
+	gnuplot -persist <<-EOFMarker
+  	set term pngcairo size 3000,1600
+  	set output "../graphsAires/Verlet_aires_$2 ans $1pts.png"
+		set datafile separator "\t"
+		set xlabel "Temps"
+		set ylabel "Erreur relative sur l'aire"
+		set format y "%.0s*10^{%T}"
+		FILES = system("ls -1 Verlet_data*.txt")
+		LABEL = system("ls -1 Verlet_data*.txt | sed -e 's/data//' -e 's/.dat//'")
+		plot for [i=1:words(FILES)] word(FILES,i) u 1:2 title word(LABEL,i) with lines noenhanced
+	EOFMarker
+fi
+
+if [ "$3" == 'RK4' ] || [ "$3" == 'all' ]; then
+	gnuplot -persist <<-EOFMarker
+  	set term pngcairo size 3000,1600
+  	set output "../graphsAires/RK4_aires_$2 ans $1pts.png"
+		set datafile separator "\t"
+		set xlabel "Temps"
+		set ylabel "Erreur relative sur l'aire"
+		set format y "%.0s*10^{%T}"
+		FILES = system("ls -1 RK4_data*.txt")
+		LABEL = system("ls -1 RK4_data*.txt | sed -e 's/data//' -e 's/.dat//'")
+		plot for [i=1:words(FILES)] word(FILES,i) u 1:2 title word(LABEL,i) with lines noenhanced
+	EOFMarker
+fi
+
+cd ..
+
+

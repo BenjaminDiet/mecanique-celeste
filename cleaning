@@ -4,13 +4,23 @@
 clear
 
 
-cd graphs
-rm *.png
+cd aires
+rm *.txt
+cd ..
+
+cd positions
+rm *.txt
 cd ..
 
 cd energies
 rm *.txt
 cd ..
+
+
+cd graphPositions
+rm *.png
+cd ..
+
 
 cd graphsEnergie
 rm *.png
@@ -20,15 +30,6 @@ cd graphsAires
 rm *.png
 cd ..
 
-
-
-cd aires
-rm *.txt
-cd ..
-
-cd positions
-rm *.txt
-cd ..
 
 
 
