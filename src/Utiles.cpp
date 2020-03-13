@@ -183,7 +183,8 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		// Ecriture des coordonnees dans des fichiers separes
 			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
 			f.open("../positions/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
-			for(int j = 0 ; j < (int) coordinates[i].size(); j++){
+			for(int j = 0 ; j < (int) coordinates[i].size(); j++){ // tous les points
+				f << setprecision(20) << (j*h)/(3600*24*365.25) << "\t";
 				for(int k = 0 ; k < (int) coordinates[i][j].size() ; k++){
 					f << coordinates[i][j][k] << "\t";
 				}
