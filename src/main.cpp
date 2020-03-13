@@ -18,7 +18,7 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-	double annee(31536000); // 1 année
+	double annee(31557600); // 1 année
 	double multi(stod(argv[3]));	// Nombre d'années
 	double n(atoi(argv[2]));		// Nombre de points de mesure
 	string unit  = argv[4];
@@ -76,19 +76,23 @@ int main(int argc, char *argv[]){
 
 		// Résoudre système dans le bon sens
 		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesActivees);	
-		// Résoudre système dans le temps négatif
-		sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesActivees);	
-
+		
+		
+		
+/*
 		// Pour comparaison des distances
-		vector<vector <double>> coordFinales = sys.getPositions();
-		double erreur(0);
-		for(int i = 0 ; i < (int) coordFinales.size() ; i++){
-			erreur += norme(distance(coordInitiales[i], coordFinales[i]));
-		}
-		erreur /= coordFinales.size();
-		cout << "\t\tDistance apres aller-retour : " << erreur*coeffPos << " " << unit << endl;
+		
+			// Résoudre système dans le temps négatif
+			sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees);	
+			vector<vector <double>> coordFinales = sys.getPositions();
+			double erreur(0);
+			for(int i = 0 ; i < (int) coordFinales.size() ; i++){
+				erreur += norme(distance(coordInitiales[i], coordFinales[i]));
+			}
+			erreur /= coordFinales.size();
+			cout << "\t\tDistance apres aller-retour : " << erreur*coeffPos << " " << unit << endl;
 		// Fin comparaison
-
+*/
 
 		chrono::steady_clock::time_point f = chrono::steady_clock::now();		
 		cout << "\t\tTemps aller-retour " << " = \t" << chrono::duration_cast<chrono::microseconds>(f - s).count()/1000 << "[ms]" << endl<<endl;

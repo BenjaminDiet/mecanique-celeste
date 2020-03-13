@@ -135,6 +135,7 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		if(id == 2) systeme.resoudreVerlet(h, relativiste);
 		if(id == 3) systeme.resoudreRK4(h, relativiste);
 		systeme.calculerBarycentre();
+		systeme.centrerBarycentre();
 		systeme.calculerAires(h);
 
 		vector <vector <double>> pos = systeme.getPositions();
@@ -175,6 +176,33 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 
 
 
+	// TRAITEMENT FICHIER
+
+	// Ecriture des coordonnees dans des fichiers separes
+		for(int i = 1 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
+		
+			double diff = norme(coordinates[i][1]) - norme(coordinates[i][0]);
+			double mini(0), maxi(0);
+			int j = 1;
+			if(diff >= 0){
+				while(norme(coordinates[i][j+1]) > norme(coordinates[i][j])) j++;
+				maxi = j;
+				while(norme(coordinates[i][j+1]) < norme(coordinates[i][j])) j++;
+				mini = j;
+			}
+			else if(diff < 0){
+				while(norme(coordinates[i][j+1]) < norme(coordinates[i][j])) j++;
+				mini = j;
+				while(norme(coordinates[i][j+1]) > norme(coordinates[i][j])) j++;
+				maxi = j;			
+			}
+			double a = norme(coordinates[i][maxi]);
+			double p = norme(coordinates[i][mini]);
+			cout << i << "\t" << 2.0*(maxi-mini)*h/(86400) << "\t" << (1.-2.0/((a/p)+1.)) << endl;		
+		}
+		
+
+
 
 	// ECRITURE FICHIER
 	ofstream f;	
@@ -184,10 +212,24 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
 			f.open("../positions/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
 			for(int j = 0 ; j < (int) coordinates[i].size(); j++){ // tous les points
-				f << setprecision(20) << (j*h)/(3600*24*365.25) << "\t";
+				f << setprecision(20) << (j*h)/(31557600) << "\t";
 				for(int k = 0 ; k < (int) coordinates[i][j].size() ; k++){
 					f << coordinates[i][j][k] << "\t";
 				}
+				f << endl;
+			}
+
+			f.close();
+		}
+		
+		
+		
+		// Ecriture des coordonnees dans des fichiers separes
+			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
+			f.open("../positions/PERIODE"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+			for(int j = 0 ; j < (int) coordinates[i].size(); j++){ // tous les points
+				f << setprecision(20) << (j*h)/(31557600) << "\t";
+					f << norme(coordinates[i][j]) << "\t";
 				f << endl;
 			}
 
@@ -202,7 +244,7 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		for(int i = 1 ; i < (int) aires.size() ; i++){ // Pour toutes les planètes SAUF SOLEIL
 			f.open("../aires/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
 			for(int j = 0 ; j < (int) aires[i].size(); j++){
-				f << setprecision(20) << (j*h)/(3600*24*365.25) << "\t" << aires[i][j] << endl;
+				f << setprecision(20) << (j*h)/(31557600) << "\t" << aires[i][j] << endl;
 			}
 			f.close();
 		}
@@ -213,7 +255,7 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		// Ecriture des énergie
 		f.open("../energies/energieMecanique"+methode +".txt",fstream::app);
 		for(int i = 0 ; i < (int) energieMeca.size() ; i++){
-			f << setprecision(20) << (i*h)/(3600*24*365.25) << "\t" << energieMeca[i] << endl;
+			f << setprecision(20) << (i*h)/(31557600) << "\t" << energieMeca[i] << endl;
 		}
 		f.close();
 	}
