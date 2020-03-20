@@ -27,14 +27,15 @@ int main(int argc, char *argv[]){
 	int mS(3), mE(3);
 	string methode[] = {"Euler", "Euler-Cromer", "Verlet", "RK4"};
 	bool relativiste(false);
-	vector <double> sortiesActivees(3, true); // Affichage position, affichage aires, affichage energie
-	vector <double> sortiesRefusees(3, false); // Affichage position, affichage aires, affichage energie
+	vector <double> sortiesActivees(4, true); // Affichage position, affichage aires, affichage energie, excentricité/périodes
+	vector <double> sortiesRefusees(4, false); // Affichage position, affichage aires, affichage energie, excentricité/périodes
 	
+	
+	double h = annee*multi/(n);
 
 	if(string(argv[6]) == "relativiste") relativiste = true;
 	if(string(argv[6]) == "classique") relativiste = false;
 
-	double h = annee*multi/(n);
 	if(unit == "UA") coeffPos = 1/(1.496e+11);
 
 	if(string(argv[5]) == "Euler"){mS = 0 ; mE = 0;}
@@ -45,12 +46,10 @@ int main(int argc, char *argv[]){
 
 
 
-
-
+	
 	Systeme systeme(dataLink);
-	vector<vector <double>> coordInitiales = systeme.getPositions();
-
-
+	
+	
 	cout << endl <<"-- PARAMETRES --"<< endl;
 	cout << "\t" << "Programme " << dataLink << endl;
 	cout << "\t" << systeme.getSize() << " objets." << endl;
@@ -64,38 +63,23 @@ int main(int argc, char *argv[]){
 
 
 
-
-	for(int methodeID = mS ; methodeID <= mE ; methodeID++){
+	for(int methodeID = mS ; methodeID <= mE ; methodeID++){ // Choix méthodes
 		
-		chrono::steady_clock::time_point s = chrono::steady_clock::now();
+		chrono::steady_clock::time_point s = chrono::steady_clock::now(); // Début chrono
+		
 		
 		Systeme sys(dataLink);
 		
 		
 		cout << "\tMethode " << methode[methodeID] << endl;
+		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesActivees); // Résoudre système dans le bon sens
+		sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees); // Résoudre dans l'autre sens	
+		cout << "\t\tDistance apres aller-retour : " << comparaisonAllerRetour(systeme.getPositions(), sys.getPositions())*coeffPos << " " << unit << endl;
 
-		// Résoudre système dans le bon sens
-		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesActivees);	
 		
-		
-		
-/*
-		// Pour comparaison des distances
-		
-			// Résoudre système dans le temps négatif
-			sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees);	
-			vector<vector <double>> coordFinales = sys.getPositions();
-			double erreur(0);
-			for(int i = 0 ; i < (int) coordFinales.size() ; i++){
-				erreur += norme(distance(coordInitiales[i], coordFinales[i]));
-			}
-			erreur /= coordFinales.size();
-			cout << "\t\tDistance apres aller-retour : " << erreur*coeffPos << " " << unit << endl;
-		// Fin comparaison
-*/
 
-		chrono::steady_clock::time_point f = chrono::steady_clock::now();		
-		cout << "\t\tTemps aller-retour " << " = \t" << chrono::duration_cast<chrono::microseconds>(f - s).count()/1000 << "[ms]" << endl<<endl;
+
+		cout << "\t\tTemps aller-retour " << " = \t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
 	}
 
 

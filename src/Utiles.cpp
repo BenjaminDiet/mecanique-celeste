@@ -125,20 +125,25 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 	double energie0 = 0;
 	double ecartAire = 0;
 
+
+
+// === DEBUT RESOLUTION SYSTEME === //
 	for(int k = 0 ; k < n ; k++){
 
 		
 		vector <double> aire = systeme.getAires();
-
+		vector <vector <double>> pos = systeme.getPositions();
+		
+		// RESOLUTION
 		if(id == 0) systeme.resoudreEuler(h, relativiste); // Résoud Euler à l'instant k*h pour tous les corps
 		if(id == 1) systeme.resoudreEulerCromer(h, relativiste);
 		if(id == 2) systeme.resoudreVerlet(h, relativiste);
 		if(id == 3) systeme.resoudreRK4(h, relativiste);
-		systeme.calculerBarycentre();
-		systeme.centrerBarycentre();
+		// FIN RESOLUTION
+		// systeme.calculerBarycentre();
+		// systeme.centrerBarycentre();
 		systeme.calculerAires(h);
 
-		vector <vector <double>> pos = systeme.getPositions();
 
 		energie = 0;
 		ecartAire = 0;
@@ -146,67 +151,84 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		for(int i = 0 ; i < (int) pos.size(); i++){ // Tous les corps
 
 
-			//Changement unité
+			// CHANGEMENT UNITES
 			vector <double> posT;
-
-			for(int k = 0 ; k < (int) pos[i].size() ; k++){posT.push_back(pos[i][k]*coeffPos);}
+			for(int m = 0 ; m < (int) pos[i].size() ; m++){posT.push_back(pos[i][m]*coeffPos);}
 			coordinates[i].push_back(posT); // ajoute les coordonnees a sortir
-
+			// POSITIONS CONVERTIES
 
 			
+			// ECART AIRE PLANETE
 			ecartAire = (aire[i]*coeffPos*coeffPos-airesInitiales[i])/airesInitiales[i]*100.0; // Energie devient erreur relative
 			aires[i].push_back(ecartAire);
+			// FIN ECART AIRE PLANETE
 
 
-			// Calcul énergies
-			// Cinétique
-			energie += 0.5*systeme.getObjet(i).getMasse()*pow(norme(systeme.getObjet(i).getVitesse()),2);
-			// Mécanique
+			// CALCUL ENERGIES
+				// ENERGIE CIN
+					energie += 0.5*systeme.getObjet(i).getMasse()*pow(norme(systeme.getObjet(i).getVitesse()),2);
+				// ENERGIE MECA
 			for(int j = i+1 ; j < (int) pos.size() ; j++) {
-					vector <double> distanceVector(3);
-					distanceVector=distance(systeme.getObjet(i).getPosition(), systeme.getObjet(j).getPosition());
-					// Energie mécanique
-					energie-=6.67e-11*systeme.getObjet(i).getMasse()*systeme.getObjet(j).getMasse()/norme(distanceVector);
+				vector <double> distanceVector = distance(systeme.getObjet(i).getPosition(), systeme.getObjet(j).getPosition());
+				energie-=6.67e-11*systeme.getObjet(i).getMasse()*systeme.getObjet(j).getMasse()/norme(distanceVector);
 			}
 		}
-		if(k==0)energie0 = energie;
-		energie = (energie-energie0)/energie0*100.0; // Energie devient erreur relative
-		energieMeca.push_back(energie);
+		
+		// ECART ENERGIE
+		if(k==0)energie0 = energie; // Enregistre première énergie comme référence
+		else{
+			energie = (energie-energie0)/energie0*100.0; // Energie devient erreur relative
+			energieMeca.push_back(energie);
+		}
+		// FIN ECART ENERGIE
+		
 	}
 
+// === FIN RESOLUTION SYSTEME === //
 
 
-	// TRAITEMENT FICHIER
+// === TRAITEMENT FICHIER === //
 
-	// Ecriture des coordonnees dans des fichiers separes
-		for(int i = 1 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
+
+
+	ofstream f;
+
+	if(sorties[3]){
+		for(int i = 1 ; i < (int)  coordinates.size() ; i++){ // Pour toutes les planètes
 		
-			double diff = norme(coordinates[i][1]) - norme(coordinates[i][0]);
-			double mini(0), maxi(0);
-			int j = 1;
-			if(diff >= 0){
-				while(norme(coordinates[i][j+1]) > norme(coordinates[i][j])) j++;
-				maxi = j;
-				while(norme(coordinates[i][j+1]) < norme(coordinates[i][j])) j++;
-				mini = j;
+			if(systeme.getObjet(i).getNature() == 1){ // Juste les planètes
+				double diff = norme(coordinates[i][1]) - norme(coordinates[i][0]);
+				double mini(0), maxi(0);
+				int j = 1;
+				if(diff >= 0){
+					while((norme(coordinates[i][j+1]) > norme(coordinates[i][j])) and (j < ((int) coordinates[i].size()-2))) j++;
+					maxi = j;
+					while((norme(coordinates[i][j+1]) < norme(coordinates[i][j]))  and (j < ((int) coordinates[i].size()-2)))j++;
+					mini = j;
+				}
+				else if(diff < 0){
+					while((norme(coordinates[i][j+1]) < norme(coordinates[i][j])) and (j < ((int) coordinates[i].size()-2))) j++;
+					mini = j;
+					while((norme(coordinates[i][j+1]) > norme(coordinates[i][j])) and (j < ((int) coordinates[i].size()-2))) j++;
+					maxi = j;		
+				}
+				double a = norme(coordinates[i][maxi]);
+				double p = norme(coordinates[i][mini]);	
+				f.open("../periodes/Periode"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+				f << abs(2.0*(maxi-mini)*h/(86400)) << endl;	
+				f.close();	
+				f.open("../eccentricites/Ecc"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+				double e = 1.0 - 2.0/(a/p + 1);
+				f << e << endl;	
+				f.close();	
 			}
-			else if(diff < 0){
-				while(norme(coordinates[i][j+1]) < norme(coordinates[i][j])) j++;
-				mini = j;
-				while(norme(coordinates[i][j+1]) > norme(coordinates[i][j])) j++;
-				maxi = j;			
-			}
-			double a = norme(coordinates[i][maxi]);
-			double p = norme(coordinates[i][mini]);
-			cout << i << "\t" << 2.0*(maxi-mini)*h/(86400) << "\t" << (1.-2.0/((a/p)+1.)) << endl;		
 		}
-		
+	}	
 
 
-
-	// ECRITURE FICHIER
-	ofstream f;	
 	if(sorties[0]){
+
+		
 	
 		// Ecriture des coordonnees dans des fichiers separes
 			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
@@ -224,35 +246,27 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		
 		
 		
-		// Ecriture des coordonnees dans des fichiers separes
-			for(int i = 0 ; i < (int) coordinates.size() ; i++){ // Pour toutes les planètes
-			f.open("../positions/PERIODE"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
-			for(int j = 0 ; j < (int) coordinates[i].size(); j++){ // tous les points
-				f << setprecision(20) << (j*h)/(31557600) << "\t";
-					f << norme(coordinates[i][j]) << "\t";
-				f << endl;
-			}
-
-			f.close();
-		}
+		
 	}
 	
 	
 	if(sorties[1]){
 
 		// Ecriture des aires dans un fichier global
-		for(int i = 1 ; i < (int) aires.size() ; i++){ // Pour toutes les planètes SAUF SOLEIL
-			f.open("../aires/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
-			for(int j = 0 ; j < (int) aires[i].size(); j++){
-				f << setprecision(20) << (j*h)/(31557600) << "\t" << aires[i][j] << endl;
+		for(int i = 0 ; i < (int) aires.size() ; i++){ // Pour toutes les planètes 
+			if(systeme.getObjet(i).getNature() == 1){ // Juste les planètes
+				f.open("../aires/"+methode+"_"+systeme.getObjet(i).getLien(),fstream::app); // Récupère le lien
+				for(int j = 0 ; j < (int) aires[i].size(); j++){
+					f << setprecision(20) << (j*h)/(31557600) << "\t" << aires[i][j] << endl;
+				}
+				f.close();
 			}
-			f.close();
 		}
 	}
 
 
 	if(sorties[2]){
-		// Ecriture des énergie
+		// Ecriture des énergies
 		f.open("../energies/energieMecanique"+methode +".txt",fstream::app);
 		for(int i = 0 ; i < (int) energieMeca.size() ; i++){
 			f << setprecision(20) << (i*h)/(31557600) << "\t" << energieMeca[i] << endl;
@@ -260,7 +274,23 @@ Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPo
 		f.close();
 	}
 
+
+
+
+
 	return systeme;
 }
 
 
+
+
+
+double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vector <double>> coordFinales){
+
+	double erreur(0);
+	for(int i = 0 ; i < (int) coordFinales.size() ; i++){
+		erreur += norme(distance(coordInitiales[i], coordFinales[i]));
+	}
+	erreur /= coordFinales.size();
+	return erreur;
+}

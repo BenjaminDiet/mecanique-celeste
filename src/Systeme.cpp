@@ -18,16 +18,19 @@ Systeme::Systeme(string flux){
 	vector <vector <double>> accelerations;
 	vector <double> masses;	
 	vector<string> liens;	
+	vector<string> noms;
+	vector<int> natures;		
 
 	vector<double>pos(3);
 	this->posBarycentre = pos;
 
 	double rX, rY, rZ, vX, vY, vZ, m;	// Valeurs temporaires
-	string l;					// Idem
+	string l, n;					// Idem
+	int nat;
 
 	while(!input.eof()){
 		vector<double> r, v, a;
-		input >> l >> rX >> rY >> rZ >> vX >> vY >> vZ >> m;
+		input >> n >> nat >> rX >> rY >> rZ >> vX >> vY >> vZ >> m;
 		r.push_back(rX); r.push_back(rY); r.push_back(rZ);
 		v.push_back(vX); v.push_back(vY); v.push_back(vZ);
 		a.push_back(0); a.push_back(0); a.push_back(0);
@@ -35,7 +38,11 @@ Systeme::Systeme(string flux){
 		vitesses.push_back(v);
 		accelerations.push_back(a);
 		masses.push_back(m);
-		liens.push_back(l);		
+		natures.push_back(nat);
+		
+		
+		liens.push_back("data"+n+".txt");	
+		noms.push_back(n);		
 	}
 	input.close();
 	// Nettoie les fins de fichiers
@@ -46,10 +53,9 @@ Systeme::Systeme(string flux){
 	liens.pop_back();
 
 
-
 	// INITIALISATION DES CORPS
 	for(int i = 0 ; i < (int) positions.size(); i++){
-		this->objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i]));
+		this->objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i], noms[i], natures[i]));
 	}
 
 }
@@ -206,7 +212,7 @@ void Systeme::calculerAcc(){
 void Systeme::calculerAccRelativite(){
 	
 	double G = 6.67e-11;
-	double c = 3.0e8;
+	double c = 299792458;
 
 	this->calculerAcc();
 	

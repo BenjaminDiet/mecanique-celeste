@@ -13,7 +13,7 @@ Corps::Corps() : position(3, 0), vitesse(3,0), acc(3,0), masse(0)
 {}
 
 
-Corps::Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s) : position(r), vitesse(v), acc(a), masse(m), lien(s)
+Corps::Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s, string n, int nat) : position(r), vitesse(v), acc(a), masse(m), lien(s), nom(n), nature(nat)
 {}
 
 
@@ -25,6 +25,7 @@ vector<double> Corps::getAcc() const{return this->acc;}
 double Corps::getMasse() const{return this->masse;}
 double Corps::getAire() const{return this->aire;}
 string Corps::getLien() const{return this->lien;}
+int Corps::getNature() const{return this->nature;}
 
 
 // Autres méthodes

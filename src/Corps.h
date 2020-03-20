@@ -9,7 +9,7 @@ class Corps
 public:
   // Constructeurs
 	Corps();
-	Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s);
+	Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s, string n, int nature);
 
   //Accesseurs et mutateurs
 	vector<double> getPosition() const;
@@ -18,6 +18,7 @@ public:
 	double getMasse() const;
 	double getAire() const;
 	string getLien() const;
+	int getNature() const;
 
   // Autres méthodes
 	void addAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
@@ -53,6 +54,9 @@ private:
 
 	double aire;
 
+
 	string lien;
+	string nom;
+	int nature;
 };
 

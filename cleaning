@@ -16,6 +16,14 @@ cd energies
 rm *.txt
 cd ..
 
+cd eccentricites
+rm *.txt
+cd ..
+
+cd periodes
+rm *.txt
+cd ..
+
 
 cd graphPositions
 rm *.png
