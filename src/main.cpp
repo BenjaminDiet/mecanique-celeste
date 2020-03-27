@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 
 	
 	Systeme systeme(dataLink,h);
-	
+	Systeme sys(dataLink,h);
 	
 	cout << endl <<"-- PARAMETRES --"<< endl;
 	cout << "\t" << "Programme " << dataLink << endl;
@@ -72,19 +72,22 @@ int main(int argc, char *argv[]){
 
 				for(int methodeID = mS ; methodeID <= mE ; methodeID++){ // Choix méthodes
 					cout << "\tMethode " << methode[methodeID] << endl;
-
 					chrono::steady_clock::time_point s = chrono::steady_clock::now(); // Début chrono
 
-					Systeme sys(dataLink,h);
+
 					sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesActivees); // Résoudre système dans le bon sens
 					sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees); // Résoudre dans l'autre sens	
 					
 					cout << "\t\tDistance apres aller-retour : " << comparaisonAllerRetour(systeme.getPositions(), sys.getPositions())*coeffPos << " " << unit << endl;
+					
+
+		cout << "\t\tTemps méthode " << " = \t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
+	
 				}
 			}
 			if(calcul==1){
 				do{
-					sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesExcentricite); // Résoudre système dans le bon sens
+					sys = resoudreSysteme(systeme, mS, n, h, coeffPos, relativiste, sortiesExcentricite); // Résoudre système dans le bon sens
 					cout << norme(systeme[1].getVitesse()) << endl;
 					systeme[1].multiplierVitesse(1.001);
 				}while(sys[1].getExcentricite() > 0);
@@ -92,9 +95,6 @@ int main(int argc, char *argv[]){
 
 	
 
-
-		cout << "\t\tTemps total " << " = \t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
-	
 
 
 

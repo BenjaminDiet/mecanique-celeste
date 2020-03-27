@@ -60,7 +60,7 @@ Systeme::Systeme(string flux,double h):posBarycentre(3){
 	for(int i = 0 ; i < (int) positions.size(); i++){
 		this->objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i], noms[i], natures[i]));
 	}
-	
+
 	for(int i=0;i<(int)objets.size();i++)
 	{
 		objets[i].AddPosition(k,h,0);
@@ -95,6 +95,7 @@ Systeme::Systeme(string flux,double h):posBarycentre(3){
 	{
 		objets[i].SetVitesse(objets[i].getVitesse()-VitBarycentre,0);
 	}
+
 }
 
 
@@ -153,8 +154,7 @@ void Systeme::calculerBarycentre()
 				massetot+=objets[i].getMasse();
 		}
 		
-		for(int i = 0 ; i < 3 ; i++){posBarycentre[i]/=massetot;}
-		
+		for(int i = 0 ; i < 3 ; i++){posBarycentre[i]/=massetot;}		
 }
 
 void Systeme::centrerBarycentre(){	
