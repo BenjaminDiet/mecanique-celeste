@@ -12,6 +12,7 @@ class Systeme;
 
 void afficher(const vector<double>& v ); // affiche un vector
 
+vector<double> operator-(vector<double> a,vector<double>b);
 double norme(const vector<double>& v); // norme d'un vector
 double moyenne(const vector<double>& v); // moyenne d'un vector
 vector<double> normaliser(const vector<double>& v);
