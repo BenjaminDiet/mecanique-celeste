@@ -17,16 +17,6 @@ void afficher(const vector<double>& v ){
 	for(int i =0 ; i < (int) v.size() ; i++){cout << i << ") " << v[i] << endl;}
 }
 
-vector<double> operator-(vector<double> a,vector<double>b){
-	
-	vector<double> difference(3);
-
-	for(int i=0;i<3;i++)
-	{
-		difference[i]=a[i]-b[i];
-	}	
-	return difference;
-}
 double norme(const vector<double>& v){
 	double nor(0);
 	for(int i = 0 ; i < (int) v.size() ; i++){

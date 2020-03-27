@@ -59,41 +59,7 @@ Systeme::Systeme(string flux){
 	for(int i = 0 ; i < (int) positions.size(); i++){
 		this->objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i], noms[i], natures[i]));
 	}
-	
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].AddPosition(k,h,0);
-	} 
-	
-	this->calculerBarycentre();
-	TmpPlusH=posBarycentre;
-	
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].SubPosition(k,2*h,0);
-	}
-	
-	this->calculerBarycentre();
-	TmpMoinsH=posBarycentre;
 
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].AddPosition(k,h,0);
-	}
-	
-	this->calculerBarycentre();
-	this->centrerBarycentre();
-	this->calculerBarycentre();
-	
-	for(int i=0;i<3;i++)
-	{
-		VitBarycentre[i]=(1.0/(2*h))*(TmpPlusH[i]-TmpMoinsH[i]);
-	}
-	
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].SetVitesse(objets[i].getVitesse()-VitBarycentre,0);
-	}
 }
 
 
