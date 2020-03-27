@@ -10,7 +10,7 @@ class Systeme
 {
 public:
   // Constructeurs
-	Systeme(string flux);
+	Systeme(string flux,double h);
 
   //Accesseurs et mutateurs
 	Corps &operator[](size_t); // Surcharge l'opérateur indiciel
