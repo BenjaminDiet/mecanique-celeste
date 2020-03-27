@@ -19,20 +19,20 @@ Corps::Corps(vector<double> r, vector<double> v, vector<double>a, double m, stri
 
 
 // Accesseurs
-vector<double> Corps::getPosition() const{return this->position;} 
-vector<double> Corps::getVitesse() const{return this->vitesse;} 
-vector<double> Corps::getAcc() const{return this->acc;}
-double Corps::getMasse() const{return this->masse;}
-double Corps::getAire() const{return this->aire;}
-string Corps::getLien() const{return this->lien;}
-int Corps::getNature() const{return this->nature;}
+vector<double> Corps::getPosition() const{return position;}
+vector<double> Corps::getVitesse() const{return vitesse;} 
+vector<double> Corps::getAcc() const{return acc;}
+double Corps::getMasse() const{return masse;}
+double Corps::getAire() const{return aire;}
+string Corps::getLien() const{return lien;}
+int Corps::getNature() const{return nature;}
 
 
 // Autres méthodes
-void Corps::addAcc(vector <double> acce){for(int k = 0 ; k < (int) acce.size() ; k++){this->acc[k] += acce[k];}}
-void Corps::setAcc(vector <double> acce){for(int k = 0 ; k < (int) acce.size() ; k++){this->acc[k] = acce[k];}}
+void Corps::addAcc(vector <double> acce){for(size_t k = 0 ; k < acce.size() ; k++){this->acc[k] += acce[k];}}
+void Corps::setAcc(vector <double> acce){for(size_t k = 0 ; k < acce.size() ; k++){this->acc[k] = acce[k];}}
 void Corps::saveAcc(){this->accAvant.assign(this->acc.begin(), this->acc.end());}
-void Corps::emptyAcc(){for(int i = 0 ; i < (int) this->acc.size() ; i++){this->acc[i] = 0;}}
+void Corps::emptyAcc(){for(size_t i = 0 ; i < this->acc.size() ; i++){this->acc[i] = 0;}}
 
 
 void Corps::loiDesAires(vector <double> barycentre, double h){

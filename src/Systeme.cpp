@@ -51,6 +51,8 @@ Systeme::Systeme(string flux){
 	accelerations.pop_back();
 	masses.pop_back();
 	liens.pop_back();
+	// ALLOUCHE : supprimer ici la vitesse du centre de masse du systeme. On calcule la vitesse du centre de masse puis on soustrait
+	// cette vitesse à chaque astre 
 
 
 	// INITIALISATION DES CORPS
@@ -156,6 +158,8 @@ void Systeme::resoudreEulerCromer(double h, bool relativiste){
 
 void Systeme::resoudreVerlet(double h, bool relativiste){
 
+// ALLOUCHE : dans votre implémentation l'accelaration à un instant t donné est calculée 2 fois :
+// Exemple à t = x seconde : Ici vous calculez acc à t = x
 	 // On calcule a(t)
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
@@ -164,6 +168,8 @@ void Systeme::resoudreVerlet(double h, bool relativiste){
 		this->objets[i].majPositionVerlet(h); // On calcule x(t+dt)
 	}
 	
+	// ALLOUCHE ici vous calculez t à x+dt, donc à t = x lors de l'appele précédant. 
+        // Donc vous calculez bien l'acc à t = x 2 fois
 	// On calcule a(t+dt)
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
@@ -177,6 +183,8 @@ void Systeme::resoudreVerlet(double h, bool relativiste){
 	
 
 void Systeme::calculerAcc(){
+double G = 6.6743015e-11;
+
 	for(int i = 0 ; i < (int) this->objets.size() ; i++){
 		this->objets[i].saveAcc(); // On sauvegarde l'accélération actuelle dans accAvant
 		this->objets[i].emptyAcc(); // On vide l'accélération
@@ -186,19 +194,24 @@ void Systeme::calculerAcc(){
 
 		for(int j = i+1 ; j < (int) this->objets.size() ; j++){
 			
-			vector<double> vecteurIJ(3), vecteurJI(3), accI(3), accJ(3);	
+			vector<double> vecteurIJ(3),  accI(3), accJ(3);	
 	
 			vecteurIJ = distance(this->objets[i].getPosition(), this->objets[j].getPosition());
-			vecteurJI = oppose(vecteurIJ);
+			
 
-			double forceI = this->objets[j].getMasse()*6.67e-11/pow(norme(vecteurIJ),2);
-			double forceJ = this->objets[i].getMasse()*6.67e-11/pow(norme(vecteurJI),2);
+			
+			double normeVecteur = norme(vecteurIJ);
+			double normeCarree = normeVecteur*normeVecteur;
+			
+			double forceI = this->objets[j].getMasse()*G/normeCarree;
+			double forceJ = this->objets[i].getMasse()*G/normeCarree;
+
 
 			for(int k = 0 ; k < (int) vecteurIJ.size() ; k++){
-				accI[k] = vecteurIJ[k]*forceI/norme(vecteurIJ);
-				accJ[k] = vecteurJI[k]*forceJ/norme(vecteurIJ);
-				
+				accI[k] = vecteurIJ[k]*forceI/normeVecteur;
+				accJ[k] = -vecteurIJ[k]*forceJ/normeVecteur;				
 			}
+			
 			this->objets[i].addAcc(accI);
 			this->objets[j].addAcc(accJ);
 			 
@@ -211,10 +224,11 @@ void Systeme::calculerAcc(){
 
 void Systeme::calculerAccRelativite(){
 	
-	double G = 6.67e-11;
+// ALLOUCHE : je vous conseille de faire un fichier Constantes.h ou vous declariez toutes les constantes utiles dans votre programme
+	double G = 6.6743015e-11;
 	double c = 299792458;
 
-	this->calculerAcc();
+	calculerAcc();
 	
 
 	for(int i = 0 ; i < (int) this->objets.size() ; i++){

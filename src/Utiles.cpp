@@ -18,7 +18,7 @@ void afficher(const vector<double>& v ){
 }
 
 double norme(const vector<double>& v){
-	double nor;
+	double nor(0);
 	for(int i = 0 ; i < (int) v.size() ; i++){
 		nor += v[i]*v[i];
 	}
