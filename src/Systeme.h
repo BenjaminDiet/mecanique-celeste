@@ -13,7 +13,8 @@ public:
 	Systeme(string flux);
 
   //Accesseurs et mutateurs
-	Corps getObjet(int i) const; // Renvoie le Corps i de l'attribut objets
+	Corps &operator[](size_t); // Surcharge l'opérateur indiciel
+	Systeme &operator=(const Systeme &source); // Opérateur copie
 	vector<Corps> getObjets() const;	// Renvoie l'ensemble des objets
 	vector<vector <double>> getPositions() const;	// Renvoie l'ensemble des positions des objets
 	vector<double> getAires() const;	// Renvoie l'ensemble des positions des objets

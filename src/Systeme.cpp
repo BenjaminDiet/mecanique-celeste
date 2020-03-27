@@ -63,14 +63,27 @@ Systeme::Systeme(string flux){
 }
 
 
-
+Systeme &Systeme::operator=(const Systeme &source){
+	this->posBarycentre=source.posBarycentre;
+	this->objets=source.getObjets();
+			
+	return *this;
+}
 
 
 
 
 // ACCESSEURS
 vector<Corps> Systeme::getObjets() const{return this->objets;}
-Corps Systeme::getObjet(int i) const{return this->objets[i];}
+
+Corps &Systeme::operator[](size_t index){
+	if(index >= objets.size()){
+		cerr << "Index hors limites" << endl;
+		return objets[0];
+	}
+	return objets[index];
+}
+
 
 
 vector<vector <double>> Systeme::getPositions() const{
@@ -84,7 +97,7 @@ vector<vector <double>> Systeme::getPositions() const{
 
 vector<double> Systeme::getAires() const{
 	vector<double>aires;
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){
+	for(size_t i = 0 ; i < this->objets.size() ; i++){
 		aires.push_back(objets[i].getAire());
 	}
 	return aires;
@@ -100,7 +113,7 @@ void Systeme::calculerBarycentre()
 {
 		double massetot(0);
 		
-		for (int i=0;i<(int)objets.size();i++){
+		for (size_t i=0;i<objets.size();i++){
 				for(int j = 0 ; j < 3 ; j++){posBarycentre[j]+=objets[i].getMasse()*objets[i].getPosition()[j];}
 				massetot+=objets[i].getMasse();
 		}
@@ -110,11 +123,11 @@ void Systeme::calculerBarycentre()
 }
 
 void Systeme::centrerBarycentre(){	
-		for(int i=0; i < (int)objets.size() ; i++){objets[i].SubPosition(posBarycentre,1,0);} // Enlève coordonnées barycentre
+		for(size_t i=0; i < objets.size() ; i++){objets[i].SubPosition(posBarycentre,1,0);} // Enlève coordonnées barycentre
 }
 
 void Systeme::calculerAires(double h){
-		for(int i=0;i<(int)objets.size();i++)
+		for(size_t i=0;i<objets.size();i++)
 			{	
 				this->objets[i].loiDesAires(this->posBarycentre, h);
 			}
@@ -133,7 +146,7 @@ void Systeme::resoudreEuler(double h, bool relativiste){
 	// On calcule a(t+dt)
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){	
+	for(size_t i = 0 ; i < this->objets.size() ; i++){	
 		this->objets[i].majPositionEuler(h); // On en déduit la position
 		this->objets[i].majVitesseEuler(h); // On en déduit la vitesse
 	}
@@ -146,7 +159,7 @@ void Systeme::resoudreEulerCromer(double h, bool relativiste){
 	// On calcule a(t+dt)
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){	
+	for(size_t i = 0 ; i < this->objets.size() ; i++){	
 		this->objets[i].majVitesseEuler(h); // On en déduit la position
 		this->objets[i].majPositionEuler(h); // On en déduit la position
 	}
@@ -158,13 +171,7 @@ void Systeme::resoudreEulerCromer(double h, bool relativiste){
 
 void Systeme::resoudreVerlet(double h, bool relativiste){
 
-// ALLOUCHE : dans votre implémentation l'accelaration à un instant t donné est calculée 2 fois :
-// Exemple à t = x seconde : Ici vous calculez acc à t = x
-	 // On calcule a(t)
-	if(relativiste) this->calculerAccRelativite();
-	else this->calculerAcc();
-
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){		
+	for(size_t i = 0 ; i < this->objets.size() ; i++){		
 		this->objets[i].majPositionVerlet(h); // On calcule x(t+dt)
 	}
 	
@@ -174,7 +181,7 @@ void Systeme::resoudreVerlet(double h, bool relativiste){
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
 
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){		
+	for(size_t i = 0 ; i < this->objets.size() ; i++){		
 		this->objets[i].majVitesseVerlet(h); // On calcule v(t+dt)
 	}
 }

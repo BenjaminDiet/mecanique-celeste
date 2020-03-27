@@ -13,7 +13,7 @@ Corps::Corps() : position(3, 0), vitesse(3,0), acc(3,0), masse(0)
 {}
 
 
-Corps::Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s, string n, int nat) : position(r), vitesse(v), acc(a), masse(m), lien(s), nom(n), nature(nat)
+Corps::Corps(vector<double> r, vector<double> v, vector<double>a, double m, string s, string n, int nat) : position(r), vitesse(v), acc(a), masse(m), lien(s), nom(n), nature(nat),aire(0), periode(0), excentricite(0)
 {}
 
 
@@ -26,6 +26,9 @@ double Corps::getMasse() const{return masse;}
 double Corps::getAire() const{return aire;}
 string Corps::getLien() const{return lien;}
 int Corps::getNature() const{return nature;}
+string Corps::getNom() const{return nom;}
+double Corps::getExcentricite() const{return excentricite;}
+double Corps::getPeriode() const{return periode;}
 
 
 // Autres méthodes
@@ -35,11 +38,22 @@ void Corps::saveAcc(){this->accAvant.assign(this->acc.begin(), this->acc.end());
 void Corps::emptyAcc(){for(size_t i = 0 ; i < this->acc.size() ; i++){this->acc[i] = 0;}}
 
 
+
+void Corps::multiplierVitesse(double k){ // multiplie la vitesse par un scalaire pour vitesse libération
+	this->vitesse = multScalaire(k, this->vitesse);	
+}
+
+
 void Corps::loiDesAires(vector <double> barycentre, double h){
 	vector<double> momentCinetique(3);
 	momentCinetique = ProdVec(distance(this->position, barycentre), this->vitesse);
 	this->aire = norme(momentCinetique)*h/2.0;
 }
+
+
+
+void Corps::setExcentricite(double e){excentricite=e;}
+void Corps::setPeriode(double p){periode=p;}
 
 
 // Résolution

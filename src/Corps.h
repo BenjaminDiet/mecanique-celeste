@@ -19,13 +19,19 @@ public:
 	double getAire() const;
 	string getLien() const;
 	int getNature() const;
+	string getNom() const;
+	double getExcentricite() const;
+	double getPeriode() const;
 
   // Autres méthodes
 	void addAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
 	void setAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
+	void multiplierVitesse(double k);
 	void saveAcc();	// Enregistre l'accélération dans accAvant
 	void emptyAcc();	// Mets l'accélération au vecteur nul
 	void loiDesAires(vector <double> barycentre, double h);
+	void setExcentricite(double e);
+	void setPeriode(double p);
 
 	
   // Résolution
@@ -52,11 +58,14 @@ private:
 
 	double masse;
 
-	double aire;
-
 
 	string lien;
 	string nom;
 	int nature;
+	
+	
+	double aire;
+	double periode;
+	double excentricite;
 };
 

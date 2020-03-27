@@ -29,6 +29,7 @@ int main(int argc, char *argv[]){
 	bool relativiste(false);
 	vector <double> sortiesActivees(4, true); // Affichage position, affichage aires, affichage energie, excentricité/périodes
 	vector <double> sortiesRefusees(4, false); // Affichage position, affichage aires, affichage energie, excentricité/périodes
+	vector <double> sortiesExcentricite={false, false, false, true}; 
 	
 	
 	double h = annee*multi/(n);
@@ -60,28 +61,40 @@ int main(int argc, char *argv[]){
 	cout << endl;
 
 
+	int calcul = 0;
 
-
-
-	for(int methodeID = mS ; methodeID <= mE ; methodeID++){ // Choix méthodes
-		
-		chrono::steady_clock::time_point s = chrono::steady_clock::now(); // Début chrono
+	
 		
 		
-		Systeme sys(dataLink);
-		
-		
-		cout << "\tMethode " << methode[methodeID] << endl;
-		sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesActivees); // Résoudre système dans le bon sens
-		sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees); // Résoudre dans l'autre sens	
-		cout << "\t\tDistance apres aller-retour : " << comparaisonAllerRetour(systeme.getPositions(), sys.getPositions())*coeffPos << " " << unit << endl;
+	
+						
+			if(calcul==0){
 
-		
+				for(int methodeID = mS ; methodeID <= mE ; methodeID++){ // Choix méthodes
+					cout << "\tMethode " << methode[methodeID] << endl;
+
+					chrono::steady_clock::time_point s = chrono::steady_clock::now(); // Début chrono
+
+					Systeme sys(dataLink);
+					sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesAcceptees); // Résoudre système dans le bon sens
+					sys = resoudreSysteme(sys, methodeID, n, -h, coeffPos, relativiste, sortiesRefusees); // Résoudre dans l'autre sens	
+					
+					cout << "\t\tDistance apres aller-retour : " << comparaisonAllerRetour(systeme.getPositions(), sys.getPositions())*coeffPos << " " << unit << endl;
+				}
+			}
+			if(calcul==1){
+				do{
+					sys = resoudreSysteme(systeme, methodeID, n, h, coeffPos, relativiste, sortiesExcentricite); // Résoudre système dans le bon sens
+					cout << norme(systeme[1].getVitesse()) << endl;
+					systeme[1].multiplierVitesse(1.001);
+				}while(sys[1].getExcentricite() > 0);
+			}	
+
+	
 
 
-		cout << "\t\tTemps aller-retour " << " = \t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
-	}
-
+		cout << "\t\tTemps total " << " = \t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
+	
 
 
 
