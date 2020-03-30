@@ -21,8 +21,3 @@ vector<double> distance(const vector<double>& a, const vector<double>& b);
 vector<double> add(const vector<double>& a, const vector<double>& b);
 vector<double> oppose(const vector<double>& a);
 vector<double> multScalaire(double m, const vector<double>& a);
-
-
-Systeme resoudreSysteme(Systeme systeme, int id, int n, double h, double coeffPos, bool relativiste, vector <double> sorties);
-
-double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vector <double>> coordFinales);

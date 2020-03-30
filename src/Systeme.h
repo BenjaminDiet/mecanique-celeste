@@ -15,8 +15,9 @@ public:
   //Accesseurs et mutateurs
 	Corps &operator[](size_t); // Surcharge l'opérateur indiciel
 	Systeme &operator=(const Systeme &source); // Opérateur copie
-	vector<Corps> getObjets() const;	// Renvoie l'ensemble des objets
+	vector<Corps> getObjets() const;	// Renvoie l'ensemble des 
 	vector<vector <double>> getPositions() const;	// Renvoie l'ensemble des positions des objets
+	vector<vector <double>> getVitesses() const;	// Renvoie l'ensemble des vitesses des objets
 	vector<double> getAires() const;	// Renvoie l'ensemble des positions des objets
 	int getSize() const;	// Renvoie le nombre d'objets
 
@@ -32,7 +33,7 @@ public:
 
 	void calculerBarycentre();
 	void centrerBarycentre();
-	void calculerAires(double h);
+	void calculerAires();
 private: 
 	vector<double> posBarycentre; // Barycentre ?
 		

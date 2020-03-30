@@ -1,5 +1,5 @@
 EXEC = mecaCeleste
-SRCS =  Corps.cpp Utiles.cpp Systeme.cpp main.cpp 
+SRCS =  Resolution.cpp Constantes.cpp Corps.cpp Utiles.cpp Systeme.cpp main.cpp 
 CXXFLAGS = -Wall
 
 # Ne rien changer a partir d'ici

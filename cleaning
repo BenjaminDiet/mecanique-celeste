@@ -16,7 +16,7 @@ cd energies
 rm *.txt
 cd ..
 
-cd eccentricites
+cd excentricites
 rm *.txt
 cd ..
 

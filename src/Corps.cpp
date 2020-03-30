@@ -1,5 +1,6 @@
 #include "Corps.h"
 #include "Utiles.h"
+#include "Constantes.h"
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -34,7 +35,6 @@ double Corps::getPeriode() const{return periode;}
 // Autres méthodes
 void Corps::addAcc(vector <double> acce){for(size_t k = 0 ; k < acce.size() ; k++){this->acc[k] += acce[k];}}
 void Corps::setAcc(vector <double> acce){for(size_t k = 0 ; k < acce.size() ; k++){this->acc[k] = acce[k];}}
-void Corps::saveAcc(){this->accAvant.assign(this->acc.begin(), this->acc.end());}
 void Corps::emptyAcc(){for(size_t i = 0 ; i < this->acc.size() ; i++){this->acc[i] = 0;}}
 
 
@@ -44,7 +44,7 @@ void Corps::multiplierVitesse(double k){ // multiplie la vitesse par un scalaire
 }
 
 
-void Corps::loiDesAires(vector <double> barycentre, double h){
+void Corps::loiDesAires(vector <double> barycentre){
 	vector<double> momentCinetique(3);
 	momentCinetique = ProdVec(distance(this->position, barycentre), this->vitesse);
 	this->aire = norme(momentCinetique)*h/2.0;
@@ -68,7 +68,7 @@ void Corps::majPositionVerlet(double h){
 
 void Corps::majVitesseVerlet(double h){
 	for(int i = 0 ; i < (int) this->vitesse.size() ; i++){
-		this->vitesse[i] += 0.5*(this->acc[i]+this->accAvant[i])*h;
+		this->vitesse[i] += 0.5*this->acc[i]*h;
 	}
 }
 

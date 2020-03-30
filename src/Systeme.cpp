@@ -1,6 +1,7 @@
 #include "Systeme.h"
 #include "Corps.h"
 #include "Utiles.h"
+#include "Constantes.h"
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -131,6 +132,16 @@ vector<vector <double>> Systeme::getPositions() const{
 }
 
 
+
+vector<vector <double>> Systeme::getVitesses() const{
+	vector<vector <double>> vit;
+	for(int i = 0 ; i < (int) this->objets.size() ; i++){
+		vit.push_back(objets[i].getVitesse());
+	}
+	return vit;
+}
+
+
 vector<double> Systeme::getAires() const{
 	vector<double>aires;
 	for(size_t i = 0 ; i < this->objets.size() ; i++){
@@ -161,10 +172,10 @@ void Systeme::centrerBarycentre(){
 		for(size_t i=0; i < objets.size() ; i++){objets[i].SubPosition(posBarycentre,1,0);} // Enlève coordonnées barycentre
 }
 
-void Systeme::calculerAires(double h){
+void Systeme::calculerAires(){
 		for(size_t i=0;i<objets.size();i++)
 			{	
-				this->objets[i].loiDesAires(this->posBarycentre, h);
+				this->objets[i].loiDesAires(this->posBarycentre);
 			}
 		
 }
@@ -210,9 +221,9 @@ void Systeme::resoudreVerlet(double h, bool relativiste){
 		this->objets[i].majPositionVerlet(h); // On calcule x(t+dt)
 	}
 	
-	// ALLOUCHE ici vous calculez t à x+dt, donc à t = x lors de l'appele précédant. 
-        // Donc vous calculez bien l'acc à t = x 2 fois
-	// On calcule a(t+dt)
+	for(size_t i = 0 ; i < this->objets.size() ; i++){		
+		this->objets[i].majVitesseVerlet(h); // On calcule v(t+dt)
+	}
 	if(relativiste) this->calculerAccRelativite();
 	else this->calculerAcc();
 
@@ -225,10 +236,8 @@ void Systeme::resoudreVerlet(double h, bool relativiste){
 	
 
 void Systeme::calculerAcc(){
-double G = 6.6743015e-11;
 
 	for(int i = 0 ; i < (int) this->objets.size() ; i++){
-		this->objets[i].saveAcc(); // On sauvegarde l'accélération actuelle dans accAvant
 		this->objets[i].emptyAcc(); // On vide l'accélération
 	}
 	for(int i = 0 ; i < (int) this->objets.size() ; i++){
@@ -266,9 +275,7 @@ double G = 6.6743015e-11;
 
 void Systeme::calculerAccRelativite(){
 	
-// ALLOUCHE : je vous conseille de faire un fichier Constantes.h ou vous declariez toutes les constantes utiles dans votre programme
-	double G = 6.6743015e-11;
-	double c = 299792458;
+
 
 	calculerAcc();
 	

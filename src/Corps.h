@@ -27,9 +27,8 @@ public:
 	void addAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
 	void setAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
 	void multiplierVitesse(double k);
-	void saveAcc();	// Enregistre l'accélération dans accAvant
 	void emptyAcc();	// Mets l'accélération au vecteur nul
-	void loiDesAires(vector <double> barycentre, double h);
+	void loiDesAires(vector <double> barycentre);
 	void setExcentricite(double e);
 	void setPeriode(double p);
 
@@ -53,8 +52,6 @@ private:
 	vector<double> position;
 	vector<double> vitesse;
 	vector<double> acc;
-
-	vector<double> accAvant; // Stockage de l'accélération pour Verlet
 
 	double masse;
 
