@@ -33,7 +33,6 @@ public:
 
 	void calculerBarycentre();
 	void centrerBarycentre();
-	void calculerAires();
 private: 
 	vector<double> posBarycentre; // Barycentre ?
 		

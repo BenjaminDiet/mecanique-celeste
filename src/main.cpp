@@ -49,13 +49,14 @@ int main(int argc, char *argv[]){
 	Systeme systeme(dataLink,h);
 	Systeme sys(dataLink,h);
 	
-	cout << endl <<"-- PARAMETRES --"<< endl;
+	cout << endl <<"---- PARAMETRES ----"<< endl;
 	cout << "\t" << "Programme " << dataLink << endl;
 	cout << "\t" << systeme.getSize() << " objets." << endl;
 	cout << "\t" << "Unite [" << unit << "]" << endl;
 	cout << "\t" << multi << " ans." << endl;
 	cout << "\t" << n << " points." << endl;
 	cout << "\t" << h << " sec/pt ou " << (h/3600) << " h/pt" << endl;
+	cout << "-- FIN PARAMETRES --"<< endl;
 	cout << endl;
 
 
@@ -74,11 +75,13 @@ int main(int argc, char *argv[]){
 
 
 					sys = resoudreSysteme(systeme, sortiesActivees); // Résoudre système dans le bon sens
+				/* 
+					// ALLER RETOUR
 					h *= -1;
 					sys = resoudreSysteme(sys, sortiesRefusees); // Résoudre dans l'autre sens	
 					
 					cout << "\t\tDistance apres aller-retour \t" << comparaisonAllerRetour(systeme.getPositions(), sys.getPositions())*coeffPos << " " << unit << endl;
-					
+				*/
 
 		cout << "\t\tTemps méthode " << " \t\t\t" << chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now() - s).count()/1000 << "[ms]" << endl<<endl; // Fin chrono
 	

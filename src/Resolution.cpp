@@ -18,15 +18,10 @@ using namespace std;
 Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 
 
-
 	// STOCKAGE POUR ECRITURE
 	vector<vector <vector <double>>> coordinates((int) systeme.getSize()); // Stockage des coordonnees pour ecriture
 	vector<vector <vector <double>>> velocities((int) systeme.getSize()); // Stockage des vitesses pour ecriture
-	vector<vector <double>> aires((int) systeme.getSize()); // Stockage des aires
-	vector<double> energieMeca; // Stockage des energies mécaniques
 
-
-	systeme.calculerBarycentre();
 
 	
 
@@ -40,16 +35,14 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 		// FIN RESOLUTION
 
 
-		systeme.calculerAires();	// Met à jour les aires du systèmes
 
 		
 
 		for(int i = 0 ; i < systeme.getSize(); i++){ // Tous les corps
 
 			// ENREGISTREMENT POSITIONS ET VITESSES ET AIRES
-			coordinates[i].push_back(multScalaire(coeffPos, systeme[i].getPosition())); // enregistre les coordonnees a sortir
-			velocities[i].push_back(multScalaire(coeffPos, systeme[i].getVitesse())); // enregistre les vitesses a sortir
-			if(sorties[1]) if(systeme[i].getNature()==1)aires[i].push_back(systeme.getAires()[i]);
+			coordinates[i].push_back(systeme[i].getPosition()); // enregistre les coordonnees a sortir
+			velocities[i].push_back(systeme[i].getVitesse()); // enregistre les vitesses a sortir
 			// POSITIONS CONVERTIES ET ENREGISTREES	
 		}
 
@@ -71,7 +64,7 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 	
 
 	// ECRITURE AIRES
-	if(sorties[1]) ecrireAires(systeme, aires);
+	if(sorties[1]) ecrireAires(systeme, coordinates, velocities);
 
 	// ECRITURE ENERGIE MECA
 	if(sorties[2]) calculerEnergiesMecaniques(systeme, coordinates, velocities);
@@ -86,17 +79,34 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 
 
 
-void ecrireAires(Systeme & sys, vector<vector <double>> & aires){
-	ofstream f;
-		for(size_t i = 0 ; i < aires.size() ; i++){ // Pour toutes les planètes 
-			if(sys[i].getNature() == 1){ // Juste les planètes
-				f.open("../aires/"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
-				for(size_t t = 1 ; t < aires[i].size(); t++){
-					f << setprecision(20) << (t*h)/(annee) << "\t" << (aires[i][t]-aires[i][0])/aires[i][0] << endl;
-				}
-				f.close();
-			}
+void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses){
+	vector<vector <double>> airesTotales;
+
+
+	// CALCUL AIRES
+	for(int t = 0 ; t < (int) coord[0].size() ; t++){	// Chaque instant t 
+		vector <double> airesT;
+		for(size_t i = 1 ; i < coord.size() ; i++){	// Chaque planète i sauf Soleil
+			double aire = 0;
+			aire = norme(ProdVec(distance(coord[i][t], coord[0][t]), vitesses[i][t]))*h/2.0;
+			airesT.push_back(aire);
 		}
+		airesTotales.push_back(airesT);
+	// FIN ENERGIES MECANIQUES
+	}
+
+
+
+	ofstream f;
+	for(int i = 1 ; i < sys.getSize() ; i++){ // Pour toutes les planètes
+			if(sys[i].getNature()==1){
+			f.open("../aires/"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
+		for(size_t t = 1 ; t < airesTotales.size(); t++){ // A chaque instant
+			f << setprecision(20) << (t*h)/(annee) << "\t" << (airesTotales[t][i]-airesTotales[0][i])/airesTotales[0][i]*100.0 << endl;
+		}
+		f.close();
+	}
+	}
 
 }
 
@@ -115,7 +125,7 @@ void ecrirePositions(Systeme & sys, vector<vector <vector <double>>> & coord){
 			for(size_t t = 0 ; t < coord[i].size(); t++){ // CHAQUE TEMPS T
 				f << setprecision(20) << (t*h)/(annee) << "\t";
 				for(int k = 0 ; k < (int) coord[i][t].size() ; k++){ // CHAQUE COORDONNEE
-					f << coord[i][t][k] << "\t";
+					f << coord[i][t][k]*coeffPos << "\t";
 				}
 				f << endl;
 			}
@@ -144,24 +154,49 @@ void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>
 			double diff = norme(coord[i][1]) - norme(coord[i][0]);
 			double mini(0), maxi(0);
 			int j = 1;
+
+			double n1 = norme(distance(coord[0][j+1],coord[i][j+1]));
+			double n2 = norme(distance(coord[0][j+1],coord[i][j]));
+
 			if(diff >= 0){
-				while((norme(coord[i][j+1]) > norme(coord[i][j])) and (j < ((int) coord[i].size()-2))) j++;
+				while((n1 > n2) and (j < ((int) coord[i].size()-2))){
+					j++;
+					n1 = norme(distance(coord[0][j+1],coord[i][j+1]));
+					n2 = norme(distance(coord[0][j+1],coord[i][j]));
+				}
 				maxi = j;
-				while((norme(coord[i][j+1]) < norme(coord[i][j]))  and (j < ((int) coord[i].size()-2)))j++;
+				while((n1 < n2)  and (j < ((int) coord[i].size()-2))){
+					j++;
+					n1 = norme(distance(coord[0][j+1],coord[i][j+1]));
+					n2 = norme(distance(coord[0][j+1],coord[i][j]));
+				}
 				mini = j;
 			}
 			else if(diff < 0){
-				while((norme(coord[i][j+1]) < norme(coord[i][j])) and (j < ((int) coord[i].size()-2))) j++;
+				while((n1 < n2) and (j < ((int) coord[i].size()-2))) {
+					j++;
+					n1 = norme(distance(coord[0][j+1],coord[i][j+1]));
+					n2 = norme(distance(coord[0][j+1],coord[i][j]));
+				}
 				mini = j;
-				while((norme(coord[i][j+1]) > norme(coord[i][j])) and (j < ((int) coord[i].size()-2))) j++;
+				while((n1 > n2) and (j < ((int) coord[i].size()-2))) {
+					j++;
+					n1 = norme(distance(coord[0][j+1],coord[i][j+1]));
+					n2 = norme(distance(coord[0][j+1],coord[i][j]));
+				}
 				maxi = j;		
 			}
-			double a = norme(coord[i][maxi]);
-			double p = norme(coord[i][mini]);	
+
+
+			double a = norme(distance(coord[0][maxi],coord[i][maxi]));
+			double p = norme(distance(coord[0][mini],coord[i][mini]));	
 			double e = 1.0 - 2.0/(a/p + 1);
-			double periode = abs(2.0*(maxi-mini)*h/(86400));				
+			double periode = abs(2.0*(maxi-mini)*h/(86400));	
+
 			sys[i].setPeriode(periode);
 			sys[i].setExcentricite(e);
+
+			// Ecriture
 			cout << "\t\t" << sys[i].getNom() << "\t" << e << "\t" << periode << endl;
 			f.open("../periodes/Periode"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
 			f << periode<< endl;	
@@ -189,12 +224,12 @@ void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> 
 		for(size_t i = 0 ; i < coord.size() ; i++){	// Chaque planète i
 
 			// ENERGIE CINETIQUE
-			energieMeca += 0.5*sys[i].getMasse() * norme(vitesses[i][t]) * norme(vitesses[i][t]) / (coeffPos*coeffPos);
+			energieMeca += 0.5*sys[i].getMasse() * norme(vitesses[i][t]) * norme(vitesses[i][t]);
 			// FIN ENERGIE CINETIQUE
 
 			// ENERGIE MECA
 			for(size_t j=i+1 ; j < coord.size() ; j++){	// Chaque planète j
-				double distanceV = norme(distance(coord[i][t], coord[j][t]))/coeffPos;
+				double distanceV = norme(distance(coord[i][t], coord[j][t]));
 				energieMeca -= G * sys[i].getMasse() * sys[j].getMasse() / distanceV;
 
 			}
@@ -236,5 +271,6 @@ double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vec
 		erreur += norme(distance(coordInitiales[i], coordFinales[i]));
 	}
 	erreur /= coordFinales.size();
+	erreur *= coeffPos;
 	return erreur;
 }

@@ -28,7 +28,6 @@ public:
 	void setAcc(vector <double> acce); // Ajout du vecteur acce à l'accélération
 	void multiplierVitesse(double k);
 	void emptyAcc();	// Mets l'accélération au vecteur nul
-	void loiDesAires(vector <double> barycentre);
 	void setExcentricite(double e);
 	void setPeriode(double p);
 

@@ -21,9 +21,8 @@ Systeme::Systeme(string flux,double h):posBarycentre(3){
 	vector<string> liens;	
 	vector<string> noms;
 	vector<int> natures;		
-	vector<double> k{1,1,1};
-	vector<double> TmpPlusH(3);
-	vector<double> TmpMoinsH(3);
+	vector<double> tmpPlusH(3);
+	vector<double> tmpMoinsH(3);
 	vector<double> VitBarycentre(3);
 
 	double rX, rY, rZ, vX, vY, vZ, m;	// Valeurs temporaires
@@ -56,47 +55,36 @@ Systeme::Systeme(string flux,double h):posBarycentre(3){
 	// ALLOUCHE : supprimer ici la vitesse du centre de masse du systeme. On calcule la vitesse du centre de masse puis on soustrait
 	// cette vitesse à chaque astre 
 
-
 	// INITIALISATION DES CORPS
-	for(int i = 0 ; i < (int) positions.size(); i++){
-		this->objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i], noms[i], natures[i]));
+	for(size_t i = 0 ; i < positions.size() ; i++){
+		objets.push_back(Corps(positions[i], vitesses[i], accelerations[i], masses[i], liens[i], noms[i], natures[i]));
 	}
 
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].AddPosition(k,h,0);
-	} 
-	
-	this->calculerBarycentre();
-	TmpPlusH=posBarycentre;
-	
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].SubPosition(k,2*h,0);
-	}
-	
-	this->calculerBarycentre();
-	TmpMoinsH=posBarycentre;
 
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].AddPosition(k,h,0);
-	}
-	
+	// BARYCENTRE
 	this->calculerBarycentre();
 	this->centrerBarycentre();
-	this->calculerBarycentre();
-	
-	for(int i=0;i<3;i++)
-	{
-		VitBarycentre[i]=(1.0/(2*h))*(TmpPlusH[i]-TmpMoinsH[i]);
-	}
-	
-	for(int i=0;i<(int)objets.size();i++)
-	{
-		objets[i].SetVitesse(objets[i].getVitesse()-VitBarycentre,0);
-	}
 
+	this->resoudreVerlet(-h, false);
+	this->calculerBarycentre();
+	tmpMoinsH = posBarycentre;
+
+	this->resoudreVerlet(h, false);
+	this->resoudreVerlet(h, false);
+
+	this->calculerBarycentre();
+	tmpPlusH = posBarycentre;
+
+	this->resoudreVerlet(-h, false);
+
+	for(int i = 0 ; i < 3 ; i++){
+		VitBarycentre[i] = (1.0/(2.0*h))*(tmpPlusH[i] - tmpMoinsH[i]);
+	}
+	
+	for(size_t i = 0 ; i < objets.size() ; i++){
+		objets[i].SetVitesse(objets[i].getVitesse()-VitBarycentre, 0); // Soustrait vitesse du barycentre
+	}
+	
 }
 
 
@@ -172,13 +160,6 @@ void Systeme::centrerBarycentre(){
 		for(size_t i=0; i < objets.size() ; i++){objets[i].SubPosition(posBarycentre,1,0);} // Enlève coordonnées barycentre
 }
 
-void Systeme::calculerAires(){
-		for(size_t i=0;i<objets.size();i++)
-			{	
-				this->objets[i].loiDesAires(this->posBarycentre);
-			}
-		
-}
 
 
 

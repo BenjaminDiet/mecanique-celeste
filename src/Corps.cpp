@@ -44,12 +44,6 @@ void Corps::multiplierVitesse(double k){ // multiplie la vitesse par un scalaire
 }
 
 
-void Corps::loiDesAires(vector <double> barycentre){
-	vector<double> momentCinetique(3);
-	momentCinetique = ProdVec(distance(this->position, barycentre), this->vitesse);
-	this->aire = norme(momentCinetique)*h/2.0;
-}
-
 
 
 void Corps::setExcentricite(double e){excentricite=e;}
