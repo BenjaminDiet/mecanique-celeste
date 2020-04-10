@@ -1,7 +1,8 @@
-Resolution.o: Resolution.cpp Utiles.h Corps.h Systeme.h Constantes.h \
+Resolution.o: Resolution.cpp Utiles.h Corps.h parametre.h Systeme.h \
+ Constantes.h Resolution.h
+Corps.o: Corps.cpp Corps.h parametre.h Utiles.h Constantes.h
+Utiles.o: Utiles.cpp Utiles.h Corps.h parametre.h Systeme.h Constantes.h
+Systeme.o: Systeme.cpp Systeme.h parametre.h Corps.h Utiles.h \
+ Constantes.h
+main.o: main.cpp Utiles.h Corps.h parametre.h Systeme.h Constantes.h \
  Resolution.h
-Constantes.o: Constantes.cpp Constantes.h
-Corps.o: Corps.cpp Corps.h Utiles.h Constantes.h
-Utiles.o: Utiles.cpp Utiles.h Corps.h Systeme.h Constantes.h
-Systeme.o: Systeme.cpp Systeme.h Corps.h Utiles.h Constantes.h
-main.o: main.cpp Utiles.h Corps.h Systeme.h Constantes.h Resolution.h

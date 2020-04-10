@@ -3,6 +3,7 @@
 #include "Systeme.h"
 #include "Constantes.h"
 #include "Resolution.h"
+
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -15,7 +16,7 @@ using namespace std;
 
 
 
-Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
+Systeme resoudreSysteme(Systeme systeme, vector <double> sorties,parametre para){
 
 
 	// STOCKAGE POUR ECRITURE
@@ -26,12 +27,12 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 	
 
 // === DEBUT RESOLUTION SYSTEME === //
-	for(int k = 0 ; k <= n ; k++){		
+	for(int k = 0 ; k <= para.n ; k++){		
 		// RESOLUTION
-		if(idMethode == 0) systeme.resoudreEuler(h, relativiste); // Résoud Euler à l'instant k*h pour tous les corps
-		if(idMethode == 1) systeme.resoudreEulerCromer(h, relativiste);
-		if(idMethode == 2) systeme.resoudreVerlet(h, relativiste);
-		if(idMethode == 3) systeme.resoudreRK4(h, relativiste);
+		if(para.idMethode == 0) systeme.resoudreEuler(para.h, para.relativiste); // Résoud Euler à l'instant k*h pour tous les corps
+		if(para.idMethode == 1) systeme.resoudreEulerCromer(para.h, para.relativiste);
+		if(para.idMethode == 2) systeme.resoudreVerlet(para.h, para.relativiste);
+		if(para.idMethode == 3) systeme.resoudreRK4(para.h, para.relativiste);
 		// FIN RESOLUTION
 
 
@@ -56,18 +57,18 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 
 
 	
-	if(sorties[3]){	calculerExcentricitesPeriodes(systeme, coordinates);}	
+	if(sorties[3]){	calculerExcentricitesPeriodes(systeme, coordinates,para);}	
 
 
 	// ECRITURE POSITIONS
-	if(sorties[0]) ecrirePositions(systeme, coordinates);
+	if(sorties[0]) ecrirePositions(systeme, coordinates, para);
 	
 
 	// ECRITURE AIRES
-	if(sorties[1]) ecrireAires(systeme, coordinates, velocities);
+	if(sorties[1]) ecrireAires(systeme, coordinates, velocities,para);
 
 	// ECRITURE ENERGIE MECA
-	if(sorties[2]) calculerEnergiesMecaniques(systeme, coordinates, velocities);
+	if(sorties[2]) calculerEnergiesMecaniques(systeme, coordinates, velocities,para);
 
 
 	return systeme;
@@ -79,7 +80,7 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties){
 
 
 
-void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses){
+void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses,parametre para){
 	vector<vector <double>> airesTotales;
 
 
@@ -88,7 +89,7 @@ void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector
 		vector <double> airesT;
 		for(size_t i = 1 ; i < coord.size() ; i++){	// Chaque planète i sauf Soleil
 			double aire = 0;
-			aire = norme(ProdVec(distance(coord[i][t], coord[0][t]), vitesses[i][t]))*h/2.0;
+			aire = norme(ProdVec(distance(coord[i][t], coord[0][t]), vitesses[i][t]))*para.h/2.0;
 			airesT.push_back(aire);
 		}
 		airesTotales.push_back(airesT);
@@ -100,9 +101,9 @@ void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector
 	ofstream f;
 	for(int i = 1 ; i < sys.getSize() ; i++){ // Pour toutes les planètes
 			if(sys[i].getNature()==1){
-			f.open("../aires/"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
+			f.open("../aires/"+para.nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
 		for(size_t t = 1 ; t < airesTotales.size(); t++){ // A chaque instant
-			f << setprecision(20) << (t*h)/(annee) << "\t" << (airesTotales[t][i]-airesTotales[0][i])/airesTotales[0][i]*100.0 << endl;
+			f << setprecision(20) << (t*para.h)/(annee) << "\t" <<(airesTotales[t][i]-airesTotales[0][i])/airesTotales[0][i]*100.0 << endl;
 		}
 		f.close();
 	}
@@ -114,18 +115,18 @@ void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector
 
 
 
-void ecrirePositions(Systeme & sys, vector<vector <vector <double>>> & coord){
+void ecrirePositions(Systeme & sys, vector<vector <vector <double>>> & coord,parametre para){
 
 	ofstream f;
  
 	for(size_t i = 0 ; i < coord.size() ; i++){ // Pour toutes les planètes
 			// OUVRE LE FICHIER
-			f.open("../positions/"+nomMethode+"_"+sys[i].getLien(),fstream::app);
+			f.open("../positions/"+para.nomMethode+"_"+sys[i].getLien(),fstream::app);
 
 			for(size_t t = 0 ; t < coord[i].size(); t++){ // CHAQUE TEMPS T
-				f << setprecision(20) << (t*h)/(annee) << "\t";
+				f << setprecision(20) << (t*para.h)/(annee) << "\t";
 				for(int k = 0 ; k < (int) coord[i][t].size() ; k++){ // CHAQUE COORDONNEE
-					f << coord[i][t][k]*coeffPos << "\t";
+					f << coord[i][t][k]*para.coeffPos << "\t";
 				}
 				f << endl;
 			}
@@ -142,7 +143,7 @@ void ecrirePositions(Systeme & sys, vector<vector <vector <double>>> & coord){
 
 
 
-void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>>> & coord){
+void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>>> & coord,parametre para){
 
 	ofstream f;
 	cout << "\t\tPlanète\tExcentricités \tPériodes" << endl;
@@ -191,17 +192,17 @@ void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>
 			double a = norme(distance(coord[0][maxi],coord[i][maxi]));
 			double p = norme(distance(coord[0][mini],coord[i][mini]));	
 			double e = 1.0 - 2.0/(a/p + 1);
-			double periode = abs(2.0*(maxi-mini)*h/(86400));	
+			double periode = abs(2.0*(maxi-mini)*para.h/(86400));	
 
 			sys[i].setPeriode(periode);
 			sys[i].setExcentricite(e);
 
 			// Ecriture
 			cout << "\t\t" << sys[i].getNom() << "\t" << e << "\t" << periode << endl;
-			f.open("../periodes/Periode"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
+			f.open("../periodes/Periode"+para.nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
 			f << periode<< endl;	
 			f.close();	
-			f.open("../excentricites/Ecc"+nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
+			f.open("../excentricites/Ecc"+para.nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
 			f << e << endl;	
 			f.close();	
 		}
@@ -213,7 +214,7 @@ void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>
 
 
 
-void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses){
+void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses,parametre para){
 	
 	vector<double> energiesMecaniques;
 	double energieMeca(0);
@@ -243,11 +244,11 @@ void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> 
 
 	// ECRITURE
 	ofstream f;
-	f.open("../energies/energieMecanique"+nomMethode+".txt",fstream::app);
+	f.open("../energies/energieMecanique"+para.nomMethode+".txt",fstream::app);
 
 	// TRANSFORMATION EN ERREUR RELATIVE
 	for(size_t i=1 ; i < energiesMecaniques.size() ; i++){
-		f << setprecision(20) << (i*h)/(31557600) << "\t" << (energiesMecaniques[i] - energiesMecaniques[0])/energiesMecaniques[0]*100.0 << endl;
+		f << setprecision(20) << (i*para.h)/(31557600) << "\t" << (energiesMecaniques[i] - energiesMecaniques[0])/energiesMecaniques[0]*100.0 << endl;
 	}
 	f.close();
 
@@ -264,13 +265,40 @@ void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> 
 
 
 
-double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vector <double>> coordFinales){
+double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vector <double>> coordFinales,parametre para){
 
 	double erreur(0);
 	for(size_t i = 0 ; i < coordFinales.size() ; i++){
 		erreur += norme(distance(coordInitiales[i], coordFinales[i]));
 	}
 	erreur /= coordFinales.size();
-	erreur *= coeffPos;
+	erreur *= para.coeffPos;
 	return erreur;
 }
+
+
+
+// Renvoie l'énergie mécanique au dernier point POUR VITESSE LIBERATION
+double calculerEnergiesMecaniques(Systeme & sys, int id, vector <vector <double>> & coord,vector <vector <double>> & vitesses){
+	
+	double energieMeca(0);
+ 
+
+			// ENERGIE CINETIQUE
+			energieMeca += 0.5*sys[id].getMasse() * norme(vitesses[id]) * norme(vitesses[id]);
+			// FIN ENERGIE CINETIQUE
+
+			// ENERGIE MECA
+			for(size_t j=0 ; j < coord.size() ; j++){	// Chaque planète j
+				if((int) j!=id){
+					double distanceV = norme(distance(coord[id], coord[j]));
+					energieMeca -= G * sys[id].getMasse() * sys[j].getMasse() / distanceV;
+				}
+
+			}
+	
+
+
+	return energieMeca;
+}
+

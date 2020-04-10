@@ -1,12 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "parametre.h"
 
 using namespace std;
 
 class Corps;
 
-class Systeme
+class Systeme: public parametre
 {
 public:
   // Constructeurs

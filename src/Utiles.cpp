@@ -28,6 +28,18 @@ vector<double> operator-(vector<double> a,vector<double>b){
 	return difference;
 }
 
+vector<double> operator+(vector<double> a,vector<double>b){
+	
+	vector<double> somme(3);
+
+	for(int i=0;i<3;i++)
+	{
+		somme[i]=a[i]+b[i];
+	}	
+
+	return somme;
+}
+
 double norme(const vector<double>& v){
 	double nor(0);
 	for(int i = 0 ; i < (int) v.size() ; i++){

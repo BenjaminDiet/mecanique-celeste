@@ -1,20 +1,5 @@
-#include <iostream>
-#include <string>
-
-
 // CONSTANTES PHYSIQUES
-extern double G;
-extern double c;
-extern double annee;
+#define G 6.6743015e-11
+#define c 299792458
+#define annee 31557600
 
-// PARAMETRES DE SIMULATION
-extern double coeffPos;	// Changement d'unité en sortie
-extern double h;	// dt
-extern bool relativiste;
-extern int n; // Nombre de points
-
-
-// METHODES DE RESOLUTION
-extern std::string nomMethode;
-extern int idMethode;
-extern std::string methodes[];

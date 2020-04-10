@@ -113,7 +113,7 @@ Corps &Systeme::operator[](size_t index){
 
 vector<vector <double>> Systeme::getPositions() const{
 	vector<vector <double>> pos;
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){
+	for(size_t i = 0 ; i < objets.size() ; i++){
 		pos.push_back(objets[i].getPosition());
 	}
 	return pos;
@@ -123,7 +123,7 @@ vector<vector <double>> Systeme::getPositions() const{
 
 vector<vector <double>> Systeme::getVitesses() const{
 	vector<vector <double>> vit;
-	for(int i = 0 ; i < (int) this->objets.size() ; i++){
+	for(size_t i = 0 ; i < objets.size() ; i++){
 		vit.push_back(objets[i].getVitesse());
 	}
 	return vit;
