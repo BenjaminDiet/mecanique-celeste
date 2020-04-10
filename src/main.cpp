@@ -56,8 +56,6 @@ int main(int argc, char *argv[]){
 		calcul = 1;
 		para.idPlanete = atoi(argv[3]);
 		para.precision = pow(10, -atoi(argv[4]));
-		cout << para.idPlanete << endl;
-		cout << para.precision << endl;
 	}
 
 
