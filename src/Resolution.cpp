@@ -16,7 +16,7 @@ using namespace std;
 
 
 
-Systeme resoudreSysteme(Systeme systeme, vector <double> sorties,parametre para){
+Systeme resoudreSysteme(Systeme systeme, parametre para){
 
 
 	// STOCKAGE POUR ECRITURE
@@ -57,18 +57,18 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties,parametre para)
 
 
 	
-	if(sorties[3]){	calculerExcentricitesPeriodes(systeme, coordinates,para);}	
+	if(para.sorties[3]){calculerExcentricitesPeriodes(systeme, coordinates,para);}	
 
 
 	// ECRITURE POSITIONS
-	if(sorties[0]) ecrirePositions(systeme, coordinates, para);
+	if(para.sorties[0]) ecrirePositions(systeme, coordinates, para);
 	
 
 	// ECRITURE AIRES
-	if(sorties[1]) ecrireAires(systeme, coordinates, velocities,para);
+	if(para.sorties[1]) calculerAires(systeme, coordinates, velocities,para);
 
 	// ECRITURE ENERGIE MECA
-	if(sorties[2]) calculerEnergiesMecaniques(systeme, coordinates, velocities,para);
+	if(para.sorties[2]) calculerEnergiesMecaniques(systeme, coordinates, velocities,para);
 
 
 	return systeme;
@@ -80,34 +80,36 @@ Systeme resoudreSysteme(Systeme systeme, vector <double> sorties,parametre para)
 
 
 
-void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses,parametre para){
-	vector<vector <double>> airesTotales;
 
 
-	// CALCUL AIRES
-	for(int t = 0 ; t < (int) coord[0].size() ; t++){	// Chaque instant t 
-		vector <double> airesT;
-		for(size_t i = 1 ; i < coord.size() ; i++){	// Chaque planète i sauf Soleil
-			double aire = 0;
-			aire = norme(ProdVec(distance(coord[i][t], coord[0][t]), vitesses[i][t]))*para.h/2.0;
-			airesT.push_back(aire);
-		}
-		airesTotales.push_back(airesT);
-	// FIN ENERGIES MECANIQUES
-	}
+void calculerAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses,parametre para){
+    vector<vector <double>> airesTotales;
 
 
+    // CALCUL AIRES
+    for(int t = 0 ; t < (int) coord[0].size() ; t++){    // Chaque instant t
+        vector <double> airesT;
+        for(size_t i = 1 ; i < coord.size() ; i++){    // Chaque planète i sauf Soleil
+            double aire = 0;
+            aire = norme(ProdVec(distance(coord[i][t], coord[0][t]), vitesses[i][t]))*para.h/2.0;
+            airesT.push_back(aire);
+        }
+        airesTotales.push_back(airesT);
+    }
 
-	ofstream f;
-	for(int i = 1 ; i < sys.getSize() ; i++){ // Pour toutes les planètes
-			if(sys[i].getNature()==1){
-			f.open("../aires/"+para.nomMethode+"_"+sys[i].getLien(),fstream::app); // Récupère le lien
-		for(size_t t = 1 ; t < airesTotales.size(); t++){ // A chaque instant
-			f << setprecision(20) << (t*para.h)/(annee) << "\t" <<(airesTotales[t][i]-airesTotales[0][i])/airesTotales[0][i]*100.0 << endl;
-		}
-		f.close();
-	}
-	}
+    
+    ofstream f;
+    for(int i = 0 ; i < sys.getSize()-1 ; i++){ // Pour toutes les planètes saauf le soleil
+        
+            if(sys[i+1].getNature()==1){
+            f.open("../aires/"+para.nomMethode+"_"+sys[i+1].getLien(),fstream::app); // Récupère le lien
+        for(size_t t = 1 ; t < airesTotales.size(); t++){ // A chaque instant
+            f << setprecision(20) << (t*para.h)/(annee) << "\t" <<(airesTotales[t][i]-airesTotales[0][i])/airesTotales[0][i]*100 << endl;
+            
+        }
+        f.close();
+    }
+    }
 
 }
 

@@ -11,7 +11,7 @@ class Systeme: public parametre
 {
 public:
   // Constructeurs
-	Systeme(string flux,double h);
+	Systeme(string flux, double h);
 
   //Accesseurs et mutateurs
 	Corps &operator[](size_t); // Surcharge l'opérateur indiciel

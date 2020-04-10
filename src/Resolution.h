@@ -12,13 +12,13 @@ class Systeme;
 
 
 
-Systeme resoudreSysteme(Systeme systeme, vector <double> sorties,parametre para);
+Systeme resoudreSysteme(Systeme systeme, parametre para);
 
 
 void calculerEnergiesMecaniques(Systeme & sys, vector<vector <vector <double>>> & coord,vector<vector <vector <double>>> & vitesses,parametre para);
 void calculerExcentricitesPeriodes(Systeme & sys, vector<vector <vector <double>>> & coord,parametre para);
 void ecrirePositions(Systeme & sys, vector<vector <vector <double>>> & coord,parametre para);
-void ecrireAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses, parametre para);
+void calculerAires(Systeme & sys, vector<vector <vector <double>>> & coord, vector<vector <vector <double>>> & vitesses, parametre para);
 
 double comparaisonAllerRetour(vector<vector <double>> coordInitiales, vector<vector <double>> coordFinales, parametre para);
 
