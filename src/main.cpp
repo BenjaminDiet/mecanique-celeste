@@ -92,6 +92,7 @@ int main(int argc, char *argv[]){
 		cout << "|" << "Programme \"" << dataLink << "\"" << endl;
 		cout << "|" << systeme.getSize() << " objets." << endl;
 		cout << "|" << "Planète : " << systeme[para.idPlanete].getNom() << "." << endl;
+		cout << "|" << "Précision : " << para.precision  << endl;
 		cout << endl;
 	}
 
@@ -133,7 +134,7 @@ int main(int argc, char *argv[]){
 
 
 
-			cout << "Vitesse de libération : " << setprecision(20) << norme(sys[para.idPlanete].getVitesse()) << "\t";
+			cout << "Vitesse de libération : " << setprecision(20) << norme(sys[para.idPlanete].getVitesse()) << endl;
 
 
 			}
